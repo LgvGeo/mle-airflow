@@ -1,8 +1,8 @@
-import sqlalchemy
-from sqlalchemy import MetaData, Table, Column, String, Integer, Float, BigInteger, DateTime
-from airflow.providers.postgres.hooks.postgres import PostgresHook
 import pandas as pd
-import numpy as np
+import sqlalchemy
+from airflow.providers.postgres.hooks.postgres import PostgresHook
+from sqlalchemy import (Column, DateTime, Float, Integer, MetaData, String,
+                        Table)
 
 
 def create_table():
@@ -43,10 +43,13 @@ def extract(**kwargs):
 
     hook = PostgresHook('source_db')
     conn = hook.get_conn()
-    sql = f"""
+    sql = """
         select
-            c.customer_id, c.begin_date, c.end_date, c.type, c.paperless_billing, c.payment_method, c.monthly_charges, c.total_charges,
-            i.internet_service, i.online_security, i.online_backup, i.device_protection, i.tech_support, i.streaming_tv, i.streaming_movies,
+            c.customer_id, c.begin_date, c.end_date,
+            c.type, c.paperless_billing, c.payment_method,
+            c.monthly_charges, c.total_charges, i.internet_service,
+            i.online_security, i.online_backup, i.device_protection,
+            i.tech_support, i.streaming_tv, i.streaming_movies,
             p.gender, p.senior_citizen, p.partner, p.dependents,
             ph.multiple_lines
         from contracts as c
